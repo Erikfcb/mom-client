@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Button, Form, FormGroup, Label, Input, Jumbotron } from "reactstrap";
 import styled from "styled-components";
 import DatePicker from "react-datepicker";
+import { useHistory } from "react-router-dom";
+import axios from "axios";
+
+import config from "./config";
 
 const AddForm = () => {
-  const [first, setFirst] = useState("");
-  const [last, setLast] = useState("");
+  const [firstName, setFirst] = useState("");
+  const [lastName, setLast] = useState("");
   const [phone, setPhone] = useState("");
   const [id, setId] = useState("");
   const [description, setDescription] = useState("");
@@ -13,34 +17,64 @@ const AddForm = () => {
   const [from, setFrom] = useState(new Date());
   const [to, setTo] = useState(new Date());
 
+  const history = useHistory();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    !token && history.push("/");
+  }, [history]);
+  const handleAdd = useCallback(() => {
+    const data = {
+      firstName,
+      lastName,
+      id,
+      phone,
+      description,
+      dayOff,
+      dates: {
+        from,
+        to
+      }
+    };
+
+    const token = localStorage.getItem("token");
+
+    axios({
+      method: "POST",
+      url: config.serverUrl + "/add",
+      headers: {
+        authorization: token
+      },
+      data
+    }).then(res => {
+      history.push("/home");
+    });
+  }, [to, from, dayOff, description, phone, id, lastName, firstName, history]);
+
   return (
     <Jumbotron>
       <CustomForm>
-        <HebrewFormGroup class="pull-right">
-          <Label for="firstName" class="pull-right">
-            שם פרטי
-          </Label>
+        <HebrewFormGroup>
+          <Label for="firstName">שם פרטי</Label>
           <HebrewInput
             direction="RTL"
-            class="pull-right"
             type="text"
             name="firstName"
             id="firstName"
-            value={first}
+            value={firstName}
             onChange={e => setFirst(e.target.value)}
           />
         </HebrewFormGroup>
-        <HebrewFormGroup class="pull-right">
+        <HebrewFormGroup>
           <Label for="lastName">שם משפחה</Label>
           <HebrewInput
             type="text"
             name="lastName"
             id="lastName"
-            value={last}
+            value={lastName}
             onChange={e => setLast(e.target.value)}
           />
         </HebrewFormGroup>
-        <HebrewFormGroup class="pull-right">
+        <HebrewFormGroup>
           <Label for="phone">טלפון</Label>
           <HebrewInput
             type="text"
@@ -50,7 +84,7 @@ const AddForm = () => {
             onChange={e => setPhone(e.target.value)}
           />
         </HebrewFormGroup>
-        <HebrewFormGroup class="pull-right">
+        <HebrewFormGroup>
           <Label for="id">ת.ז.</Label>
           <HebrewInput
             type="text"
@@ -60,7 +94,7 @@ const AddForm = () => {
             value={id}
           />
         </HebrewFormGroup>
-        <HebrewFormGroup class="pull-right">
+        <HebrewFormGroup>
           <Label for="description">הוסף תיאור</Label>
           <HebrewInput
             type="textarea"
@@ -105,19 +139,8 @@ const AddForm = () => {
 
         <HebrewButton
           color="primary"
-          class="float-right"
-          onClick={() =>
-            console.log("Results: ", {
-              first,
-              last,
-              id,
-              phone,
-              description,
-              dayOff,
-              from,
-              to
-            })
-          }
+          className="float-right"
+          onClick={handleAdd}
         >
           הוסף
         </HebrewButton>
