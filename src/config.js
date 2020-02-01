@@ -1,6 +1,4 @@
 export default {
-  serverUrl:
-    process.env.REACT_APP_NODE_ENV === "production"
-      ? process.env.REACT_APP_SERVER_URL
-      : "http://localhost:5000"
+  serverUrl: "https://mom-server.herokuapp.com"
+  // serverUrl: 'http://localhost:5000'
 };
