@@ -4,10 +4,9 @@ import { Form, FormGroup, Label, Input, Jumbotron, Button } from "reactstrap";
 import styled from "styled-components";
 import axios from "axios";
 import config from "./config";
+console.log("config: ", config);
 
 const Login = () => {
-  console.log("process.env.NODE_ENV: ", process.env.NODE_ENV);
-  console.log("process.env.SERVER_URL: ", process.env.SERVER_URL);
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();

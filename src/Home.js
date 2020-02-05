@@ -13,6 +13,9 @@ const Home = () => {
 
   const [search, setSearch] = useState("");
   const [dayOff, setDayOff] = useState(false);
+  console.log("dayOff: ", dayOff);
+  const [sick, setSick] = useState(false);
+  console.log("sick: ", sick);
 
   const history = useHistory();
 
@@ -49,6 +52,26 @@ const Home = () => {
     });
   }, [history]);
 
+  useEffect(() => {
+    let newData = [...data];
+
+    if (dayOff) {
+      newData = data.filter(item => item.dayOff);
+    }
+
+    if (sick) {
+      newData = data.filter(item => item.sick);
+    }
+
+    if (search) {
+      newData = newData.filter(({ firstName, lastName }) => {
+        return firstName.includes(search) || lastName.includes(search);
+      });
+    }
+
+    setFiltered(newData);
+  }, [search, dayOff, sick, data]);
+
   return (
     <Jumbotron>
       <Link to="/add">
@@ -64,14 +87,6 @@ const Home = () => {
             value={search}
             onChange={e => {
               setSearch(e.target.value);
-              setFiltered(
-                data.filter(({ firstName, lastName }) => {
-                  return (
-                    firstName.includes(e.target.value) ||
-                    lastName.includes(e.target.value)
-                  );
-                })
-              );
             }}
           />
         </HebrewFormGroup>
@@ -84,15 +99,23 @@ const Home = () => {
               value={dayOff}
               onChange={e => {
                 setDayOff(!dayOff);
-
-                setFiltered(
-                  data.filter(item =>
-                    !dayOff ? item.dayOff === !dayOff : true
-                  )
-                );
               }}
+              disabled={sick}
             />
             :רק חופש
+          </Label>
+          <Label for="sick">
+            <Input
+              type="checkbox"
+              name="sick"
+              id="sick"
+              value={sick}
+              onChange={e => {
+                setSick(!sick);
+              }}
+              disabled={dayOff}
+            />
+            :רק מחלה
           </Label>
         </HebrewFormGroup>
       </CustomForm>

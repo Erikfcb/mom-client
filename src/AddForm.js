@@ -14,6 +14,7 @@ const AddForm = () => {
   const [id, setId] = useState("");
   const [description, setDescription] = useState("");
   const [dayOff, setDayOff] = useState(false);
+  const [sick, setSick] = useState(false);
   const [from, setFrom] = useState(new Date());
   const [to, setTo] = useState(new Date());
 
@@ -30,6 +31,7 @@ const AddForm = () => {
       phone,
       description,
       dayOff,
+      sick,
       dates: {
         from,
         to
@@ -48,7 +50,18 @@ const AddForm = () => {
     }).then(res => {
       history.push("/home");
     });
-  }, [to, from, dayOff, description, phone, id, lastName, firstName, history]);
+  }, [
+    to,
+    from,
+    dayOff,
+    sick,
+    description,
+    phone,
+    id,
+    lastName,
+    firstName,
+    history
+  ]);
 
   return (
     <Jumbotron>
@@ -107,8 +120,7 @@ const AddForm = () => {
         <HebrewFormGroup>
           :מ
           <DatePicker
-            dateFormat="d MMMM, yyyy h:mm aa"
-            showTimeSelect
+            dateFormat="d MMMM, yyyy"
             selected={from}
             customInput={<DateInput />}
             onChange={date => setFrom(date)}
@@ -118,8 +130,7 @@ const AddForm = () => {
           :עד
           <DatePicker
             style={{ width: "100%" }}
-            dateFormat="d MMMM, yyyy h:mm aa"
-            showTimeSelect
+            dateFormat="d MMMM, yyyy"
             selected={to}
             customInput={<DateInput />}
             onChange={date => setTo(date)}
@@ -134,6 +145,16 @@ const AddForm = () => {
               onChange={() => setDayOff(!dayOff)}
             />
             סמן כחופש
+          </Label>
+        </HebrewFormGroup>
+        <HebrewFormGroup check>
+          <Label check>
+            <Input
+              type="checkbox"
+              value={sick}
+              onChange={() => setSick(!sick)}
+            />
+            סמן כמחלה
           </Label>
         </HebrewFormGroup>
 

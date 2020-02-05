@@ -14,25 +14,35 @@ import { Table, Button } from "reactstrap";
 // TODO: add search bar by name or description
 
 const formatDates = dates => {
-  const formattedFrom = format(new Date(dates.from), "d MMMM, yyyy h:mm aa");
-  const formattedTo = format(new Date(dates.to), "d MMMM, yyyy h:mm aa");
-  return `${formattedFrom} - ${formattedTo}`;
+  const formattedFrom = format(new Date(dates.from), "d/MM/yyyy");
+  const formattedTo = format(new Date(dates.to), "d/MM/yyyy");
+  return (
+    <div>
+      {formattedFrom} -<br /> {formattedTo}
+    </div>
+  );
 };
 
 const DataTable = ({ data, handleDelete }) => {
   const createBody = useCallback(
     () =>
       data.map((item, index) => (
-        <Row key={index} stripe={index % 2} dayOff={item.dayOff}>
+        <Row
+          key={index}
+          stripe={index % 2}
+          dayOff={item.dayOff}
+          sick={item.sick}
+        >
           <Head scope="row">{index + 1}</Head>
           <Cell>{item.firstName + " " + item.lastName}</Cell>
           <Cell>{item.id}</Cell>
           <Cell>{item.phone}</Cell>
-          <Cell>{formatDates(item.dates)}</Cell>
+          <Cell ltr>{formatDates(item.dates)}</Cell>
           <Cell>{item.description}</Cell>
+          <Cell> {item.sick ? "כן" : "לא"}</Cell>
+          <Cell>{item.dayOff ? "כן" : "לא"}</Cell>
           <Cell>
             <Actions>
-              {item.dayOff ? "כן" : "לא"}
               <CustomButton
                 color="danger"
                 onClick={() => handleDelete(item._id)}
@@ -47,7 +57,7 @@ const DataTable = ({ data, handleDelete }) => {
   );
 
   return (
-    <Table responsive>
+    <CustomTable responsive>
       <thead>
         <Row>
           <Head>#</Head>
@@ -56,21 +66,23 @@ const DataTable = ({ data, handleDelete }) => {
           <Head>טלפון</Head>
           <Head>תאריכים</Head>
           <Head>תיאור</Head>
+          <Head>מחלה</Head>
           <Head>חופש</Head>
+          <Head></Head>
         </Row>
       </thead>
 
       <tbody>{data.length ? createBody() : []}</tbody>
-    </Table>
+    </CustomTable>
   );
 };
 
 export default DataTable;
 
 const Cell = styled.td`
-  max-width: ${100 / 7}%;
+  max-width: ${100 / 9}%;
   flex-grow: 1;
-  direction: rtl;
+  direction: ${({ ltr }) => (ltr ? "ltr" : "rtl")};
   display: flex;
   border-right: 1px solid #dee2e6;
 `;
@@ -84,12 +96,16 @@ const Row = styled.tr`
       return "#ffffaa";
     }
 
+    if (props.sick) {
+      return "#ffaacd";
+    }
+
     return props.stripe ? "#f4f6f7" : "";
   }};
 `;
 
 const Head = styled.th`
-  max-width: ${100 / 7}%;
+  max-width: ${100 / 9}%;
   direction: rtl;
   display: flex;
   flex-grow: 1;
@@ -106,4 +122,8 @@ const Actions = styled.div`
   width: 100%;
   justify-content: space-between;
   align-items: center;
+`;
+
+const CustomTable = styled(Table)`
+  margin-top: 20px;
 `;
