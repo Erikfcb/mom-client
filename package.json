@@ -15,7 +15,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.3.0",
     "reactstrap": "^8.4.0",
-    "styled-components": "^5.0.0"
+    "styled-components": "^5.3.5"
   },
   "scripts": {
     "start": "node main.js",
